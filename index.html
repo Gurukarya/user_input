@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Input Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 400px;
+            margin: auto;
+            text-align: center;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+        }
+        input, button {
+            width: 100%;
+            margin-top: 10px;
+            padding: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h2>User Input Form</h2>
+    <form id="userForm">
+        <input type="text" id="phone" placeholder="Enter Phone Number" required>
+        <input type="text" id="name" placeholder="Enter Name" required>
+        <button type="submit">Submit</button>
+    </form>
+    <p id="responseMessage"></p>
+
+    <script>
+        document.getElementById("userForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
+            var phone = document.getElementById("phone").value;
+            var name = document.getElementById("name").value;
+
+            fetch("https://script.google.com/macros/s/AKfycbx54AZ4P8Kxz5qt6rrU1o2O4v5iRegPNACxUt7_PEDb8DpDszDuHg7wHdMIkQRrlj3X/exec", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ phone: phone, name: name })
+            })
+            .then(response => response.text())
+            .then(data => {
+                document.getElementById("responseMessage").innerText = "Form submitted successfully!";
+                document.getElementById("userForm").reset();
+            })
+            .catch(error => console.error("Error:", error));
+        });
+    </script>
+</body>
+</html>
