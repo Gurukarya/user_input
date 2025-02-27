@@ -59,42 +59,45 @@
     <p id="responseMessage" class="message"></p>
 
     <script>
-        document.getElementById("userForm").addEventListener("submit", function(event) {
-            event.preventDefault(); // Prevent form from refreshing the page
+    document.getElementById("userForm").addEventListener("submit", function(event) {
+        event.preventDefault(); // Prevent form refresh
 
-            var phone = document.getElementById("phone").value;
-            var name = document.getElementById("name").value;
+        var phone = document.getElementById("phone").value;
+        var name = document.getElementById("name").value;
 
-            var formData = new FormData();
-            formData.append("phone", phone);
-            formData.append("name", name);
+        var formData = new FormData();
+        formData.append("phone", phone);
+        formData.append("name", name);
 
-            var url = "https://script.google.com/macros/s/AKfycbxWDSkej19L1wHcUM5h5M10_CRsVxeEh6kJtBpJ3tpbfjizV6BMs1LfDdlSjEtnTobp/exec";
+        var url = "https://script.google.com/macros/s/AKfycbxWDSkej19L1wHcUM5h5M10_CRsVxeEh6kJtBpJ3tpbfjizV6BMs1LfDdlSjEtnTobp/exec";
 
-            fetch(url, {
-                method: "POST",
-                body: formData
-            })
-            .then(response => response.text())  // First, get response as text
-            .then(text => {
-                try {
-                    let data = JSON.parse(text);  // Manually parse JSON
-                    if (data.status === "Success") {
-                        document.getElementById("responseMessage").innerText = "Form submitted successfully!";
-                        document.getElementById("userForm").reset();
-                    } else {
-                        document.getElementById("responseMessage").innerText = "Submission failed: " + data.message;
-                    }
-                } catch (error) {
-                    document.getElementById("responseMessage").innerText = "Unexpected response: " + text;
+        fetch(url, {
+            method: "POST",
+            body: formData
+        })
+        .then(response => response.text()) // First, get response as text
+        .then(text => {
+            console.log("Raw Response:", text); // Debugging response
+
+            try {
+                let data = JSON.parse(text.trim()); // Parse JSON after trimming spaces
+                if (data.status === "Success") {
+                    document.getElementById("responseMessage").innerText = "Form submitted successfully!";
+                    document.getElementById("userForm").reset();
+                } else {
+                    document.getElementById("responseMessage").innerText = "Submission failed: " + data.message;
                 }
-            })
-            .catch(error => {
-                console.error("Error:", error);
-                document.getElementById("responseMessage").innerText = "Submission failed. Please try again.";
-            });
+            } catch (error) {
+                document.getElementById("responseMessage").innerText = "Unexpected response: " + text;
+            }
+        })
+        .catch(error => {
+            console.error("Error:", error);
+            document.getElementById("responseMessage").innerText = "Submission failed. Please try again.";
         });
-    </script>
+    });
+</script>
+
 
 </body>
 </html>
