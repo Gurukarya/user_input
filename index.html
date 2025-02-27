@@ -32,26 +32,27 @@
     <p id="responseMessage"></p>
 
     <script>
-        document.getElementById("userForm").addEventListener("submit", function(event) {
-            event.preventDefault();
+     document.getElementById("userForm").addEventListener("submit", function(event) {
+    event.preventDefault();
 
-            var phone = document.getElementById("phone").value;
-            var name = document.getElementById("name").value;
+    var phone = document.getElementById("phone").value;
+    var name = document.getElementById("name").value;
+    var url = "https://script.google.com/macros/s/AKfycbygXoVYhk1hpfKJ3jKfmd8mIkDkx9yheFrvaQb07I5rD0v9XF-HlvokexFT_gW0EpsQ/exec" + "?phone=" + encodeURIComponent(phone) + "&name=" + encodeURIComponent(name);
 
-    fetch("https://script.google.com/macros/s/AKfycbxRHfr4Im0daQEdG9qS9rFuKypwi1Ec-caECHMqRlewAvmEQmVawo5T21DFYARBg2I/exec", {
-    method: "POST",
-    headers: {
-        "Content-Type": "application/json"
-    },
-    body: JSON.stringify({ phone: phone, name: name })
-})
-.then(response => response.json())  // Expect JSON response
-.then(data => {
-    document.getElementById("responseMessage").innerText = data.message;
-})
-.catch(error => console.error("Error:", error));
+    fetch(url, {
+        method: "GET", // Change from POST to GET
+    })
+    .then(response => response.json())
+    .then(data => {
+        document.getElementById("responseMessage").innerText = "Form submitted successfully!";
+        document.getElementById("userForm").reset();
+    })
+    .catch(error => {
+        console.error("Error:", error);
+        document.getElementById("responseMessage").innerText = "Submission failed.";
+    });
+});
 
-        });
     </script>
 </body>
 </html>
