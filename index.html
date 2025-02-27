@@ -38,17 +38,19 @@
             var phone = document.getElementById("phone").value;
             var name = document.getElementById("name").value;
 
-            fetch("https://script.google.com/macros/s/AKfycbwxWnS1aTqWjFq0qgcr5QPs-A5AXMI0xUPmt6kFZdIWVO85dfdqG49rasWku18FkHI4/exec", {
-                method: "POST",
-                headers: { "Content-Type": "application/json" },
-                body: JSON.stringify({ phone: phone, name: name })
-            })
-            .then(response => response.text())
-            .then(data => {
-                document.getElementById("responseMessage").innerText = "Form submitted successfully!";
-                document.getElementById("userForm").reset();
-            })
-            .catch(error => console.error("Error:", error));
+    fetch("https://script.google.com/macros/s/AKfycbxRHfr4Im0daQEdG9qS9rFuKypwi1Ec-caECHMqRlewAvmEQmVawo5T21DFYARBg2I/exec", {
+    method: "POST",
+    headers: {
+        "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ phone: phone, name: name })
+})
+.then(response => response.json())  // Expect JSON response
+.then(data => {
+    document.getElementById("responseMessage").innerText = data.message;
+})
+.catch(error => console.error("Error:", error));
+
         });
     </script>
 </body>
