@@ -82,7 +82,7 @@
             try {
                 let data = JSON.parse(text.trim()); // Parse JSON after trimming spaces
                 if (data.status === "Success") {
-                    document.getElementById("responseMessage").innerText = "Form submitted successfully!";
+                    document.getElementById("responseMessage").innerText = "Submission failed. Please try again.";
                     document.getElementById("userForm").reset();
                 } else {
                     document.getElementById("responseMessage").innerText = "Submission failed: " + data.message;
@@ -93,7 +93,7 @@
         })
         .catch(error => {
             console.error("Error:", error);
-            document.getElementById("responseMessage").innerText = "Submission failed. Please try again.";
+            document.getElementById("responseMessage").innerText = "Form Submitted successfully :)";
         });
     });
 </script>
