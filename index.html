@@ -65,18 +65,29 @@
             var phone = document.getElementById("phone").value;
             var name = document.getElementById("name").value;
 
-            // Replace with your actual Google Apps Script Web App URL
-            var url = "https://script.google.com/macros/s/AKfycbx_QHc4OnAv8P0qFdyJ5qPldYxBqPAefmFRDImIBZxXtMiuiBEjzJX-pcCKVnqcd_Oe/exec" + 
-                      "?phone=" + encodeURIComponent(phone) + 
-                      "&name=" + encodeURIComponent(name);
+            var formData = new FormData();
+            formData.append("phone", phone);
+            formData.append("name", name);
+
+            var url = "https://script.google.com/macros/s/AKfycbx_QHc4OnAv8P0qFdyJ5qPldYxBqPAefmFRDImIBZxXtMiuiBEjzJX-pcCKVnqcd_Oe/exec";
 
             fetch(url, {
-                method: "GET",
+                method: "POST",
+                body: formData
             })
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById("responseMessage").innerText = "Form submitted successfully!";
-                document.getElementById("userForm").reset();
+            .then(response => response.text())  // First, get response as text
+            .then(text => {
+                try {
+                    let data = JSON.parse(text);  // Manually parse JSON
+                    if (data.status === "Success") {
+                        document.getElementById("responseMessage").innerText = "Form submitted successfully!";
+                        document.getElementById("userForm").reset();
+                    } else {
+                        document.getElementById("responseMessage").innerText = "Submission failed: " + data.message;
+                    }
+                } catch (error) {
+                    document.getElementById("responseMessage").innerText = "Unexpected response: " + text;
+                }
             })
             .catch(error => {
                 console.error("Error:", error);
