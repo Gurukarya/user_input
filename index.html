@@ -56,10 +56,10 @@
 
     <script>
         document.getElementById("fetchForm").addEventListener("submit", function(event) {
-            event.preventDefault(); // Prevent form from refreshing the page
+            event.preventDefault(); // Prevent form refresh
 
             var phone = document.getElementById("phone").value;
-            var url = "https://script.google.com/macros/s/https://script.google.com/macros/s/AKfycbzct5J37N4bvaIa9t7XIu9glQkN4CQ0VbnU7rLEbxeAd4SojhplbFQkHXZJ3PdJcSym/exec/exec?phone=" + encodeURIComponent(phone);
+            var url = "https://script.google.com/macros/s/AKfycbzct5J37N4bvaIa9t7XIu9glQkN4CQ0VbnU7rLEbxeAd4SojhplbFQkHXZJ3PdJcSym/exec?phone=" + encodeURIComponent(phone);
 
             fetch(url, {
                 method: "GET",
@@ -67,13 +67,12 @@
                     "Content-Type": "application/json"
                 }
             })
-            .then(response => response.json())
+            .then(response => response.json().catch(() => null)) // Handle non-JSON responses
             .then(data => {
-                console.log("Response:", data); // Debug response in console
-                if (data.status === "Success") {
+                if (data && data.status === "Success") {
                     document.getElementById("responseMessage").innerText = "Name: " + data.name + "\nAmount: " + data.amount;
                 } else {
-                    document.getElementById("responseMessage").innerText = "Error: " + data.message;
+                    document.getElementById("responseMessage").innerText = "Error: " + (data ? data.message : "Invalid response from server");
                 }
             })
             .catch(error => {
