@@ -3,85 +3,49 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Data Lookup</title>
+    <title>Fetch User Data</title>
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 50px;
-        }
-        form {
-            max-width: 400px;
-            margin: auto;
-            padding: 20px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background-color: #f9f9f9;
-        }
-        input {
-            width: 100%;
-            padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        button {
-            width: 100%;
-            padding: 10px;
-            background-color: #28a745;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #218838;
-        }
-        .message {
-            margin-top: 15px;
-            font-weight: bold;
-        }
+        body { font-family: Arial, sans-serif; text-align: center; margin: 50px; }
+        form { max-width: 400px; margin: auto; padding: 20px; border: 1px solid #ccc; border-radius: 5px; background-color: #f9f9f9; }
+        input, button { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ccc; border-radius: 5px; }
+        button { background-color: #007bff; color: white; cursor: pointer; }
+        button:hover { background-color: #0056b3; }
+        .message { margin-top: 15px; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <h2>Lookup User Data</h2>
+    <h2>Fetch User Data</h2>
     <form id="fetchForm">
         <label for="phone">Enter Phone Number:</label>
         <input type="text" id="phone" name="phone" required>
-
-        <button type="button" onclick="fetchData()">Fetch</button>
+        <button type="submit">Fetch</button>
     </form>
 
     <p id="responseMessage" class="message"></p>
 
     <script>
-        function fetchData() {
+        document.getElementById("fetchForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+
             var phone = document.getElementById("phone").value;
-            if (!phone) {
-                document.getElementById("responseMessage").innerText = "Please enter a phone number.";
-                return;
-            }
+            var url = "https://script.google.com/macros/s/https://script.google.com/macros/s/AKfycbxvpb2ASeXV8nkiadrXNsFQ0lPnBYcMiqTxobEqomxEy-LHghHKPwK3rhkObMH3twgt/exec/exec?phone=" + encodeURIComponent(phone);
 
-            var url = "https://script.google.com/macros/s/AKfycbwe_kZ61rr7qd-2jUnOSDZkvjTiYAOfqwrrQ2x6N8ESyDoEZ8-WGE_Lz_NHOQ_9GOVz/exec" + 
-                      "?action=fetch&phone=" + encodeURIComponent(phone);
-
-            fetch(url, {
-                method: "GET",
-            })
+            fetch(url)
             .then(response => response.json())
             .then(data => {
                 if (data.status === "Success") {
-                    document.getElementById("responseMessage").innerText = "Name: " + data.name + " | Amount: " + data.amount;
+                    document.getElementById("responseMessage").innerText = 
+                        "Name: " + data.name + "\nAmount: " + data.amount;
                 } else {
-                    document.getElementById("responseMessage").innerText = "No record found.";
+                    document.getElementById("responseMessage").innerText = "Error: " + data.message;
                 }
             })
             .catch(error => {
                 console.error("Error:", error);
                 document.getElementById("responseMessage").innerText = "Failed to fetch data. Please try again.";
             });
-        }
+        });
     </script>
 
 </body>
