@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>User Input Form</title>
+    <title>User Data Lookup</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -45,60 +45,44 @@
 </head>
 <body>
 
-    <h2>User Input Form</h2>
-    <form id="userForm">
-        <label for="phone">Phone Number:</label>
+    <h2>Lookup User Data</h2>
+    <form id="fetchForm">
+        <label for="phone">Enter Phone Number:</label>
         <input type="text" id="phone" name="phone" required>
 
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name" required>
-
-        <button type="submit">Submit</button>
+        <button type="button" onclick="fetchData()">Fetch</button>
     </form>
 
     <p id="responseMessage" class="message"></p>
 
-   <script>
-    document.getElementById("userForm").addEventListener("submit", function(event) {
-        event.preventDefault(); // Prevent form refresh
-
-        var phone = document.getElementById("phone").value;
-        var name = document.getElementById("name").value;
-
-        var url = "https://script.google.com/macros/s/AKfycbxti2IHS6efclMq1NFHAxDQw7v-1gs4JtdHsoS3ujUHxgulL48fSvmT4To6CU5lc6nS/exec";
-        
-        var formData = new FormData();
-        formData.append("phone", phone);
-        formData.append("name", name);
-
-        fetch(url, {
-            method: "POST",
-            body: formData
-        })
-        .then(response => response.text()) // Get response as plain text
-        .then(text => {
-            console.log("Raw Response:", text); // Debugging response
-
-            try {
-                let data = JSON.parse(text.trim()); // Trim spaces and parse JSON
-                if (data.status === "Success") {
-                    document.getElementById("responseMessage").innerText = "Form submitted successfully!";
-                    document.getElementById("userForm").reset();
-                } else {
-                    document.getElementById("responseMessage").innerText = "Submission failed: " + data.message;
-                }
-            } catch (error) {
-                document.getElementById("responseMessage").innerText = "Unexpected response: " + text;
+    <script>
+        function fetchData() {
+            var phone = document.getElementById("phone").value;
+            if (!phone) {
+                document.getElementById("responseMessage").innerText = "Please enter a phone number.";
+                return;
             }
-        })
-        .catch(error => {
-            console.error("Error:", error);
-            document.getElementById("responseMessage").innerText = "Submission failed. Please try again.";
-        });
-    });
-</script>
 
+            var url = "https://script.google.com/macros/s/AKfycbwe_kZ61rr7qd-2jUnOSDZkvjTiYAOfqwrrQ2x6N8ESyDoEZ8-WGE_Lz_NHOQ_9GOVz/exec" + 
+                      "?action=fetch&phone=" + encodeURIComponent(phone);
 
+            fetch(url, {
+                method: "GET",
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === "Success") {
+                    document.getElementById("responseMessage").innerText = "Name: " + data.name + " | Amount: " + data.amount;
+                } else {
+                    document.getElementById("responseMessage").innerText = "No record found.";
+                }
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                document.getElementById("responseMessage").innerText = "Failed to fetch data. Please try again.";
+            });
+        }
+    </script>
 
 </body>
 </html>
